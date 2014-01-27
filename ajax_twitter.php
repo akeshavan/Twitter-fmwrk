@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 require_once("twitteroauth/twitteroauth/twitteroauth.php"); //Path to twitteroauth library
 
 $result = array();
-$outputDir = '/outputs/';
+$outputDir = 'outputs/';
 
 if (isset($_POST['searchText']) && !is_null($_POST['searchText']))
 {
