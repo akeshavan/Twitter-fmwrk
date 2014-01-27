@@ -32,6 +32,7 @@ if (isset($_POST['searchText']) && !is_null($_POST['searchText']))
         $tweets = $connection->get("https://api.twitter.com/1.1/search/tweets.json?q=".str_replace("#", "%23", $search)."&count=".$notweets);
 
         $outputFileName = $outputDir . $search . "|" . time().  '.json';
+		error_log($outputFileName);
         $outputFile = fopen($outputFileName, 'w');
         fwrite($outputFile, json_encode($tweets));
         fclose($outputFile);
@@ -46,18 +47,25 @@ if (isset($_POST['searchText']) && !is_null($_POST['searchText']))
         $existingIds = array();
 
         error_log("Function : " . $_POST['functionName']);
-        $dir = new DirectoryIterator(dirname(__FILE__));
+        $dir = new DirectoryIterator(dirname(__FILE__) . '/' . $outputDir );
         foreach ($dir as $fileinfo) {
             if (!$fileinfo->isDot()) {
-                $fileName = $fileinfo->getFilename();
+				$fileName = $fileinfo->getFilename();
+                $fileFullPath = $outputDir . $fileName;
+
+				error_log('looking at '.$fileName);
                 if(strpos($fileName, ".json") !== FALSE && strpos($fileName, "-CONSOLIDATED") === FALSE) {
-                    $searchInfo = explode("|", $fileName);
-                    if(strpos($searchInfo[0], $search) !== FALSE) {
-                        $jsonContents = json_decode(file_get_contents($fileName), true);
+				    error_log('inside if for .json and not consolidated');   
+					$searchInfo = explode("|", $fileName);
+					if(strpos($searchInfo[0], $search) !== FALSE) {
+						error_log('inside if for is same serch term');
+                        $jsonContents = json_decode(file_get_contents($fileFullPath), true);
                         $tweets = $jsonContents['statuses'];
 
                         foreach($tweets as $tweet) {
-                            if(!isset($existingIds[$tweet['id']])){
+							error_log('each tweet'.$tweet['id']);
+							if(!isset($existingIds[$tweet['id']])){
+								error_log('non-existing tweet');
                                 $allJsonData[] = $tweet;
                                 $existingIds[$tweet['id']] = true;
                             }

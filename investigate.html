@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <title>D3 Test</title>
-<script	type="text/javascript"	src="d3.v3/d3.v3.js"></script>
+<!-- <script	type="text/javascript"	src="d3.v3/d3.v3.js"></script> -->
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script	type="text/javascript"	src="js/lodash.min.js"></script>
+<!-- <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script> -->
 <link href="stylez.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -12,7 +15,56 @@
 
 <script type="text/javascript">
 
+d3.select("body").append("p").text("New bargraph!");
+
+// Nab and clean data
+var dataset, hashLists = [], hashcounts = {},
+	hashvals = [], hashkeys = [];
+d3.json("outputs/%23catsofinstagram-CONSOLIDATED~1390802719.json", function(json) {
+
+	dataset = json; // Log output to console
+
+
+	_(dataset).pluck('entities').pluck('hashtags').each(function(hashtag){
+			hashLists.push(_(hashtag).pluck('text').value());
+		}
+	)
+
+	hashLists = _.flatten(hashLists);
+
+	hashcounts = _.countBy(hashLists, function(hashtag){
+		return hashtag.toLowerCase();
+		});
+	hashvals = _.values(hashcounts);
+	hashkeys = _.keys(hashcounts);
+
+
+
+});
+
+// Make a bar chart
+
+// Width and height
+var w = 500;
+var h = 100;
+
+// Create SVG element
+var svg = d3.select("body").append("canvas").attr("width", w).attr("height", h);
+// Draw
+
+svg.selectAll("rect")
+.data([10,60,30,15])
+.enter()
+.append("rect")
+.attr("x", 0)
+.attr("y", 0)
+.attr("width", 20)
+.attr("height", 100)
+.style("color", "teal");
+
 </script>
+
+<div></div>
 
 </body>
 </html>
