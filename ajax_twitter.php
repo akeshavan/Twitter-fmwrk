@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 require_once("twitteroauth/twitteroauth/twitteroauth.php"); //Path to twitteroauth library
 
 $result = array();
-
+$outputDir = '/outputs/';
 
 if (isset($_POST['searchText']) && !is_null($_POST['searchText']))
 {
@@ -31,7 +31,7 @@ if (isset($_POST['searchText']) && !is_null($_POST['searchText']))
 
         $tweets = $connection->get("https://api.twitter.com/1.1/search/tweets.json?q=".str_replace("#", "%23", $search)."&count=".$notweets);
 
-        $outputFileName = $search . "|" . time().  '.json';
+        $outputFileName = $outputDir . $search . "|" . time().  '.json';
         $outputFile = fopen($outputFileName, 'w');
         fwrite($outputFile, json_encode($tweets));
         fclose($outputFile);
@@ -67,7 +67,7 @@ if (isset($_POST['searchText']) && !is_null($_POST['searchText']))
             }
         }
 
-        $outputFileName = $search . "-CONSOLIDATED~" . time().  '.json';
+        $outputFileName = $outputDir . $search . "-CONSOLIDATED~" . time().  '.json';
         $outputFile = fopen($outputFileName, 'w');
         fwrite($outputFile, json_encode($allJsonData));
         fclose($outputFile);
