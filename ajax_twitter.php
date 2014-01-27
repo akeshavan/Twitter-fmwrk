@@ -43,7 +43,7 @@ if (isset($_POST['searchText']) && !is_null($_POST['searchText']))
     if(isset($_POST['functionName']) && !is_null($_POST['functionName']) && $_POST['functionName'] == 'consolidateJSON')
     {
         $allJsonData = array();
-        $existing_ids = array();
+        $existingIds = array();
 
         error_log("Function : " . $_POST['functionName']);
         $dir = new DirectoryIterator(dirname(__FILE__));
@@ -54,12 +54,12 @@ if (isset($_POST['searchText']) && !is_null($_POST['searchText']))
                     $searchInfo = explode("|", $fileName);
                     if(strpos($searchInfo[0], $search) !== FALSE) {
                         $jsonContents = json_decode(file_get_contents($fileName), true);
-                        $tweets = $jsonContents['statuses']
+                        $tweets = $jsonContents['statuses'];
 
                         foreach($tweets as $tweet) {
-                            if(!isset($existing_ids[$tweet['id']])){
+                            if(!isset($existingIds[$tweet['id']])){
                                 $allJsonData[] = $tweet;
-                                $existing_ids[$tweet['id']] = true;
+                                $existingIds[$tweet['id']] = true;
                             }
                         }
                     }
