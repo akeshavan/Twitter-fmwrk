@@ -38,33 +38,33 @@ d3.json("outputs/%23catsofinstagram-CONSOLIDATED~1390802719.json", function(json
 	hashvals = _.values(hashcounts);
 	hashkeys = _.keys(hashcounts);
 
-
-
-});
-
 // Make a bar chart
 
 // Width and height
 var w = 500;
 var h = 100;
-
 // Create SVG element
-var svg = d3.select("body").append("canvas").attr("width", w).attr("height", h);
+var svg = d3.select("body").append("div").style("width", '100%').style("height", h + "px").attr('class','graph');
 // Draw
 
-svg.selectAll("rect")
-.data([10,60,30,15])
+svg.selectAll("div")
+.data(hashvals)
 .enter()
-.append("rect")
-.attr("x", 0)
-.attr("y", 0)
-.attr("width", 20)
-.attr("height", 100)
-.style("color", "teal");
+.append("div")
+.style("left", function(d, i){
+	return i * (100 / hashvals.length) + "%"
+	})
+.style("height", function(d, i){
+	return d * 10 + "px"
+})
+.attr("class", 'bar');
+
+});
+
+
 
 </script>
 
-<div></div>
 
 </body>
 </html>

@@ -5,9 +5,15 @@ body {
 }
 
 div.bar {
-	display: inline-block;
+	/*display: inline-block;*/
+	position: absolute;
+	bottom: 0px;
 	width: 20px;
 	height: 75px;
 	background-color: teal;
 }
 
+div.graph {
+	background: gray;
+	position: relative;
+}
