@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>D3 Test</title>
+<!-- <script	type="text/javascript"	src="d3.v3/d3.v3.js"></script> -->
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script	type="text/javascript"	src="js/lodash.min.js"></script>
+<!-- <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script> -->
+<link href="stylez.css" rel="stylesheet" type="text/css">
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+// Width and height
+  var margin = {top: 40, right: 20, bottom: 100, left: 30},
+  	width = 960 - margin.left - margin.right,
+  	height = 500 - margin.top - margin.bottom;
+
+
+  var x = d3.scale.ordinal()
+  	.rangeRoundBands([0, width], 0.5);
+  var y = d3.scale.linear()
+  	.range([height, 0]);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left")
+
+// Define tooltips
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      return "<strong>Frequency:</strong> <span style='color:red'>" + d.freqs + "</span>";
+    });
+
+// Create SVG element
+  var svg = d3.select("body").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .attr("stroke", "black")
+  .attr("stroke-width", "0.5")
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.call(tip);
+
+// Dataset containers
+  var hashLists = [], hashcounts = {},
+	hashvals = [], hashkeys = [], dataset = [];
+
+// Nab data
+d3.json("outputs/%23sochi-CONSOLIDATED~1390940661.json", 
+  function(error, data) {
+
+// Preprocessing (cleaning) steps for the data
+	_(data).pluck('entities').pluck('hashtags').each(function(hashtag){
+			hashLists.push(_(hashtag).pluck('text').value());
+		});
+	hashLists = _.flatten(hashLists);
+	hashCounts = _.countBy(hashLists, function(hashtag){
+		return hashtag.toLowerCase();
+		});
+
+	_(hashCounts).each(function(count, hashtag){
+		if(count >= 3){
+		dataset.push({'freqs':count, 'hashtag':hashtag});
+		};
+	})
+
+    function compare(a,b) {
+  if (a.freqs < b.freqs)
+     return -1;
+  if (a.freqs > b.freqs)
+    return 1;
+  return 0;
+  }
+
+  dataset.sort(compare);
+  dataset.pop();
+
+// Make a bar chart
+
+// Set domain values
+  x.domain(_(dataset).pluck('hashtag').value());
+  y.domain([0, d3.max(_(dataset).pluck('freqs').value())]);
+
+// Make x axis labels
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")
+      	.style("text-anchor", "end")
+      	.attr("dx", "-.8em")
+      	.attr("dy", ".15em")
+      	.attr("transform", function(d){
+      		return "rotate(-65)"
+      	});
+
+// Make y axis labels
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Frequency");
+
+// Draw
+
+  svg.selectAll(".bar")
+      .data(dataset)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.hashtag); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.freqs); })
+      .attr("height", function(d) { 
+      	return height - y(d.freqs); })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
+
+});
+
+
+</script>
+
+
+</body>
+</html>

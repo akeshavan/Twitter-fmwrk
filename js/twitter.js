@@ -6,12 +6,12 @@ var showtweetlinks = true;
 var autorefresh = true;
 var showtweetactions = true;
 var showretweetindicator = true;
-var refreshinterval = 60000; //Time to autorefresh tweets in milliseconds. 60000 milliseconds = 1 minute
+var refreshinterval = 600000; //Time to autorefresh tweets in milliseconds. 60000 milliseconds = 1 minute
 var refreshtimer;
 var headerHTML = '';
 var loadingHTML = '';
 var startTime = new Date();
-var endTime = new Date(startTime.getTime() + 30 * 60000); // so to stop after 30 min, change the code to 30*60000
+var endTime = new Date(startTime.getTime() +  72 * 60 * 60 * 1000); // so to stop after 30 min, change the code to 30*60000
 
 headerHTML += '<a href="https://twitter.com/" ><img src="images/twitter-bird-light.png" width="34" style="float:left;padding:3px 12px 0px 6px" alt="twitter bird" /></a>';
 headerHTML += '<h1>' + twittersearchtitle + '</h1>';
