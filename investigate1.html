@@ -6,6 +6,7 @@
 <!-- <script	type="text/javascript"	src="d3.v3/d3.v3.js"></script> -->
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script	type="text/javascript"	src="js/lodash.min.js"></script>
+<script type="text/javascript"  src="js/investigate_funcs.js"></script>
 <!-- <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script> -->
 <link href="stylez.css" rel="stylesheet" type="text/css">
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
@@ -16,9 +17,9 @@
 <script type="text/javascript">
 
 // Width and height
-  var margin = {top: 40, right: 20, bottom: 100, left: 30},
+  var margin = {top: 40, right: 20, bottom: 120, left: 30},
   	width = 960 - margin.left - margin.right,
-  	height = 500 - margin.top - margin.bottom;
+  	height = 600 - margin.top - margin.bottom;
 
 
   var x = d3.scale.ordinal()
@@ -58,9 +59,8 @@ svg.call(tip);
 	hashvals = [], hashkeys = [], dataset = [];
 
 // Nab data
-d3.json("outputs/%23sochi-CONSOLIDATED~1390940661.json", 
+d3.json("outputs/%23catsofinstagram-CONSOLIDATED~1391023850.json", 
   function(error, data) {
-
 // Preprocessing (cleaning) steps for the data
 	_(data).pluck('entities').pluck('hashtags').each(function(hashtag){
 			hashLists.push(_(hashtag).pluck('text').value());
@@ -86,6 +86,8 @@ d3.json("outputs/%23sochi-CONSOLIDATED~1390940661.json",
 
   dataset.sort(compare);
   dataset.pop();
+
+  dataset = shuffle(dataset);
 
 // Make a bar chart
 
